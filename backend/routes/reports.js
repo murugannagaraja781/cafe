@@ -1,11 +1,48 @@
-const router = require("express").Router();
-const Invoice = require("../models/Invoice");
-const auth = require("../middleware/authMiddleware");
+// ...existing code
+const Purchase = require("../models/Purchase");
+const Sale = require("../models/Sale");
 
-router.get("/sales", auth, async (req, res) => {
-  const invoices = await Invoice.find();
-  const total = invoices.reduce((sum, inv) => sum + inv.total, 0);
-  res.json({ total, count: invoices.length });
-});
+// Profit & Loss
+router.get(
+  "/profit-loss",
+  auth,
+  authorizeRoles(["admin", "superadmin"]),
+  async (req, res) => {
+    const sales = await Sale.find();
+    const salesTotal = sales.reduce((sum, sale) => sum + sale.total, 0);
 
-module.exports = router;
+    const purchases = await Purchase.find();
+    const purchaseTotal = purchases.reduce((sum, p) => sum + p.totalCost, 0);
+
+    const profit = salesTotal - purchaseTotal;
+    res.json({
+      salesTotal,
+      purchaseTotal,
+      profit,
+      loss: profit < 0 ? Math.abs(profit) : 0,
+    });
+  }
+);
+
+// Best Sellers
+router.get(
+  "/best-sellers",
+  auth,
+  authorizeRoles(["admin", "superadmin"]),
+  async (req, res) => {
+    const sales = await Sale.aggregate([
+      { $unwind: "$items" },
+      {
+        $group: {
+          _id: { product: "$items.name", size: "$items.size" },
+          totalSold: { $sum: "$items.quantity" },
+          totalRevenue: {
+            $sum: { $multiply: ["$items.quantity", "$items.price"] },
+          },
+        },
+      },
+      { $sort: { totalSold: -1 } },
+    ]);
+    res.json(sales);
+  }
+);

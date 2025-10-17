@@ -8,22 +8,20 @@ const productRoutes = require("./routes/products");
 const invoiceRoutes = require("./routes/invoices");
 const reportRoutes = require("./routes/reports");
 const saleRoutes = require("./routes/sales");
+const stackRoutes = require("./routes/stacks");
+const purchaseRoutes = require("./routes/purchases");
 
+app.use("/api/stacks", stackRoutes);
+app.use("/api/purchases", purchaseRoutes);
 const app = express();
 
 // Global CORS
-// app.use(
-//   cors({
-//     origin: "http://localhost:5173",
-//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-//     allowedHeaders: ["Content-Type", "Authorization"],
-//     credentials: true, // Only needed if you use cookies/auth
-//   })
-// );
 app.use(
   cors({
-    origin: "http://localhost:5173", // or use '*' to allow all origins (not recommended for production)
-    credentials: true, // if you use cookies/sessions
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true, // Only needed if you use cookies/auth
   })
 );
 
@@ -36,6 +34,8 @@ app.use("/api/sales", saleRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/invoices", invoiceRoutes);
 app.use("/api/reports", reportRoutes);
+app.use("/api/stacks", stackRoutes);
+app.use("/api/purchases", purchaseRoutes);
 
 // MongoDB connection
 mongoose

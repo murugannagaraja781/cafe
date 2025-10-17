@@ -100,7 +100,7 @@ const POS = () => {
           {filteredMenu.map((item) => (
             <div
               key={item.id}
-              className="menu-card bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col overflow-hidden border border-gray-200 hover:border-orange-400 p-2"
+              className="menu-card bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col  border border-gray-200 hover:border-orange-400 p-2"
             >
               <div className="relative h-40  overflow-hidden rounded-xl">
                 <img
@@ -128,18 +128,12 @@ const POS = () => {
                 )}
 
                 {item.priceSmall && item.priceBig && (
-                  <div className="flex justify-between items-center space-x-2">
-                    <button
-                      onClick={() => addToCart(item, "small")}
-                      className="flex-1 py-2 text-xs bg-gradient-to-r from-yellow-400 to-orange-400 text-white rounded-xl shadow-md hover:from-yellow-500 hover:to-orange-500 transition-all"
-                    >
-                      S - ₹{item.priceSmall}
-                    </button>
+                  <div className=" w-full flex justify-between items-center space-x-2">
                     <button
                       onClick={() => addToCart(item, "big")}
-                      className="flex-1 py-2 text-xs bg-gradient-to-r from-red-400 to-pink-500 text-white rounded-xl shadow-md hover:from-red-500 hover:to-pink-600 transition-all"
+                      className=" w-full flex-1 py-2 text-xs bg-gradient-to-r from-red-400 to-pink-500 text-white rounded-xl shadow-md hover:from-red-500 hover:to-pink-600 transition-all"
                     >
-                      B - ₹{item.priceBig}
+                      ₹{item.priceBig}
                     </button>
                   </div>
                 )}
