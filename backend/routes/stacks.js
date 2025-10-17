@@ -1,13 +1,15 @@
 const router = require("express").Router();
 const Stack = require("../models/Stack");
-const auth = require("../middleware/authMiddleware");
-const authorizeRoles = require("../middleware/authorizeRoles");
+const {
+  isAuthenticatedUser,
+  authorizeRoles,
+} = require("../middleware/authMiddleware");
 
-// List all stacks
+// List stacks
 router.get(
   "/",
-  auth,
-  authorizeRoles(["admin", "superadmin"]),
+  isAuthenticatedUser,
+  authorizeRoles("admin", "superadmin"),
   async (req, res) => {
     const stacks = await Stack.find();
     res.json(stacks);
@@ -17,8 +19,8 @@ router.get(
 // Add/update stack
 router.post(
   "/",
-  auth,
-  authorizeRoles(["admin", "superadmin"]),
+  isAuthenticatedUser,
+  authorizeRoles("admin", "superadmin"),
   async (req, res) => {
     const { item, quantity, unit, costPrice } = req.body;
     let stack = await Stack.findOne({ item });
@@ -32,4 +34,5 @@ router.post(
     res.json(stack);
   }
 );
+
 module.exports = router;

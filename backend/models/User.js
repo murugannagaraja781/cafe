@@ -3,25 +3,13 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, "Please enter your name"],
-  },
-  email: {
-    type: String,
-    required: [true, "Please enter your email"],
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: [true, "Please enter your password"],
-    minlength: 6,
-    select: false, // don't return password by default
-  },
+  name: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true, select: false },
   role: {
     type: String,
-    enum: ["user", "admin", "superadmin"],
-    default: "user",
+    enum: ["superadmin", "admin", "staff"],
+    default: "staff",
   },
 });
 
@@ -38,9 +26,9 @@ userSchema.methods.comparePassword = async function (enteredPassword) {
 };
 
 // Generate JWT
-userSchema.methods.getJWTToken = function () {
+userSchema.methods.getJwtToken = function () {
   return jwt.sign({ id: this._id, role: this.role }, process.env.JWT_SECRET, {
-    expiresIn: "7d",
+    expiresIn: process.env.JWT_EXPIRE,
   });
 };
 
